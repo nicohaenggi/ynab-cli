@@ -9,7 +9,7 @@ const main = async () => {
     throw new Error('No budget found');
   }
   const accounts = await ynabClient.getAccounts(budget_id);
-  const account_id = accounts.data.accounts[0]?.id;
+  const account_id = accounts.data.accounts[1]?.id;
   if (!account_id) {
     throw new Error('No account found');
   }

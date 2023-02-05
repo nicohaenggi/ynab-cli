@@ -1,8 +1,8 @@
-import { getTransactionsRequest } from './ubs.get-transactions.request';
-import type { UBSTransaction } from './ubs.types';
+import Big from 'big.js';
 import { SaveTransaction } from 'ynab';
-
+import { getTransactionsRequest } from './ubs.get-transactions.request';
 import { mock } from './ubs.transactions.mock';
+import type { UBSTransaction } from './ubs.types';
 
 const mock_data = true;
 
@@ -19,28 +19,36 @@ export class UBSProvider {
     this.navajo = UBS_NAVAJOS;
   }
 
-  async getTransactions() {
+  async getTransactions(timePeriodFrom?: string, timePeriodTo?: string) {
     console.log('Fetching transactions...');
     let transactions: UBSTransaction[];
     if (!mock_data) {
-      const response = await getTransactionsRequest(this.creditCardAccountIds, this.navajo);
+      const response = await getTransactionsRequest(this.creditCardAccountIds, this.navajo, timePeriodFrom, timePeriodTo);
+      if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) {
+        throw new Error('Failed to fetch transactions');
+      }
       const text = await response.text();
-      transactions = JSON.parse(text)._embedded.transactions;
+      transactions = JSON.parse(text)._embedded.transactions ?? [];
     } else {
       transactions = mock;
     }
-
     return transactions;
   }
 
   async transformTransactions(accountId: string, transactions: UBSTransaction[]) {
-    const ynabTransactions: SaveTransaction[] = transactions.map((transaction) => {
+    // Not booked transactions don't have an _id, so they would be imported multiple times
+    // TODO check if we can use transactionNr instead of _id
+    const filteredTransactions = transactions.filter((transaction) => transaction.transactionStatus === 'BOOKED');
+
+    const ynabTransactions: SaveTransaction[] = filteredTransactions.map((transaction) => {
+      const transactionAmount =
+        transaction.transactionStatus === 'BOOKED' ? transaction.postingAmount.amount : transaction.originalAmount.amount;
       return {
         account_id: accountId,
         date: transaction.transactionDate,
-        amount: parseFloat(transaction.postingAmount.amount) * 1000,
+        amount: new Big(transactionAmount).mul(1000).toNumber(),
         payee_name: transaction.details,
-        cleared: SaveTransaction.ClearedEnum.Cleared, // TODO map UBS transaction status to YNAB transaction status
+        cleared: transaction.transactionStatus === 'BOOKED' ? SaveTransaction.ClearedEnum.Cleared : SaveTransaction.ClearedEnum.Uncleared,
         approved: false,
         import_id: transaction._id,
       };

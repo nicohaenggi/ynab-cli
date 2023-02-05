@@ -1,20 +1,32 @@
-import { fetch, Headers } from 'undici';
+import { Headers, fetch } from 'undici';
 
-export const getTransactionsRequest = async (creditCardAccountIds: string, navajo: string) => {
+export const getTransactionsRequest = async (
+  creditCardAccountIds: string,
+  navajo: string,
+  timePeriodFrom?: string,
+  timePeriodTo?: string,
+) => {
   const { UBS_API_KEY } = process.env;
   if (!UBS_API_KEY) {
-    throw new Error('Missing environment variables');
+    throw new Error('Missing UBS API KEY');
   }
 
-  const myHeaders = new Headers();
-  myHeaders.append('Cookie', `NavLB_EBCH=ebanking-ch2.ubs.com; Navajo=${navajo};`);
-  myHeaders.append('apikey', UBS_API_KEY);
+  const headers = new Headers({
+    Cookie: `NavLB_EBCH=ebanking-ch2.ubs.com; Navajo=${navajo};`,
+    apikey: UBS_API_KEY,
+  });
 
-  const fetch_url = `https://ebanking-ch2.ubs.com/api/v1/credit-card-transactions?creditCardAccountIds=${creditCardAccountIds}`;
+  const queryParams = new URLSearchParams({
+    creditCardAccountIds,
+    ...(timePeriodFrom && { timePeriodFrom }),
+    ...(timePeriodTo && { timePeriodTo }),
+  });
 
-  return fetch(fetch_url, {
+  const fetchUrl = `https://ebanking-ch2.ubs.com/api/v1/credit-card-transactions?${queryParams}`;
+
+  return fetch(fetchUrl, {
     method: 'GET',
-    headers: myHeaders,
+    headers: headers,
     redirect: 'follow',
   });
 };

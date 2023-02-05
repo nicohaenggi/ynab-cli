@@ -1,4 +1,6 @@
-export const mock = [
+import type { UBSTransaction } from './ubs.types';
+
+export const mock: UBSTransaction[] = [
   {
     _id: '2022364253104831',
     cardNr: '5170 71XX XXXX 1473',

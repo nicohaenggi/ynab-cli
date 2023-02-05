@@ -34,7 +34,14 @@ export class YNABClient {
     console.log('Creating transactions...');
     try {
       const response = await this.ynabApi.transactions.createTransactions(budget_id, { transactions });
-      console.log(response);
+      const { duplicate_import_ids } = response.data;
+
+      if (duplicate_import_ids) {
+        const transactionsToUpdate = transactions.filter(
+          (transaction) => transaction.import_id && duplicate_import_ids.includes(transaction.import_id),
+        );
+        await this.ynabApi.transactions.updateTransactions(budget_id, { transactions: transactionsToUpdate });
+      }
     } catch (error) {
       console.error(error);
     }
