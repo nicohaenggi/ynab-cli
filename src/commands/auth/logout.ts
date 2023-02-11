@@ -1,6 +1,7 @@
-import { Args, Command, Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
+import { CommandBase } from '../command.base';
 
-export default class AuthLogoutCommand extends Command {
+export default class AuthLogoutCommand extends CommandBase {
   static override description = 'LOGOUT command';
 
   static override flags = {

@@ -1,6 +1,4 @@
-import { AuthService } from '../services/auth';
-import { ConfigService } from '../services/config';
-import { YnabService } from '../services/ynab';
+import { AuthService, ConfigService, YnabService } from './services';
 
 export class Context {
   private readonly _config: ConfigService;

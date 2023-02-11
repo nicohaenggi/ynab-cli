@@ -1,6 +1,7 @@
-import { Args, Command, Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
+import { CommandBase } from '../command.base';
 
-export default class ConnectionsListCommand extends Command {
+export default class ConnectionsListCommand extends CommandBase {
   static override description = 'LIST command';
 
   static override flags = {

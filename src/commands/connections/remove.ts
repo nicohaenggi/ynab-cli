@@ -1,6 +1,7 @@
-import { Args, Command, Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
+import { CommandBase } from '../command.base';
 
-export default class ConnectionsRemoveCommand extends Command {
+export default class ConnectionsRemoveCommand extends CommandBase {
   static override description = 'REMOVE command';
 
   static override flags = {

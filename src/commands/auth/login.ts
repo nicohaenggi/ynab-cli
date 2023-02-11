@@ -1,9 +1,8 @@
-import { Command } from '@oclif/core';
 import { prompt } from 'inquirer';
 import ora from 'ora';
-import { context } from '../../context';
+import { CommandBase } from '../command.base';
 
-export default class AuthLoginCommand extends Command {
+export default class AuthLoginCommand extends CommandBase {
   static override description = 'Authenticates an user with YNAB.';
 
   private readonly spinner: ora.Ora = ora();
@@ -11,7 +10,7 @@ export default class AuthLoginCommand extends Command {
   async run(): Promise<void> {
     // make sure we don't accidentally overwrite an existing session
     this.spinner.start('Checking if already authenticated');
-    const isAuthenticated = await context.auth.isAuthenticated();
+    const isAuthenticated = await this.context.auth.isAuthenticated();
     this.spinner.stop();
     if (isAuthenticated) {
       const { shouldContinue } = await prompt<{ shouldContinue: boolean }>({
@@ -57,7 +56,7 @@ export default class AuthLoginCommand extends Command {
 
   private async runAccessTokenLoginFlow(accessToken: string): Promise<string | undefined> {
     this.spinner.start('Authenticating with access token');
-    const isSuccess = await context.auth.authenticateWithAccessToken(accessToken);
+    const isSuccess = await this.context.auth.authenticateWithAccessToken(accessToken);
     if (!isSuccess) return 'Authentication failed. Please check your access token.';
   }
 }

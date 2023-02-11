@@ -1,6 +1,7 @@
-import { Args, Command, Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
+import { CommandBase } from '../command.base';
 
-export default class SyncRunCommand extends Command {
+export default class SyncRunCommand extends CommandBase {
   static override description = 'RUN command';
 
   static override flags = {

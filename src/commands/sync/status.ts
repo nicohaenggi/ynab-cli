@@ -1,6 +1,7 @@
-import { Args, Command, Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
+import { CommandBase } from '../command.base';
 
-export default class SyncStatusCommand extends Command {
+export default class SyncStatusCommand extends CommandBase {
   static override description = 'STATUS command';
 
   static override flags = {
