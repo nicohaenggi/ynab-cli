@@ -20,7 +20,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "importsNotUsedAsValues": "error",
     "checkJs": true,
     "declaration": true,
@@ -29,10 +29,6 @@
     "sourceMap": true,
     "incremental": true,
     "importHelpers": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "paths": {
-      "@common/*": ["src/common/*"]
-    }
+    "outDir": "./dist"
   }
 }
