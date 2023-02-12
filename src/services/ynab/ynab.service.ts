@@ -26,4 +26,18 @@ export class YnabService {
       balance: account.balance,
     }));
   }
+
+  public async listCategories(budgetId: string) {
+    const categories = await this.client.getCategories(budgetId);
+    return categories.flatMap((categoryGroup) => {
+      return categoryGroup.categories.map((category) => ({
+        id: category.id,
+        categoryGroupName: categoryGroup.name,
+        name: category.name,
+        budgeted: category.budgeted / 1000,
+        activity: category.activity / 1000,
+        balance: category.balance / 1000,
+      }));
+    });
+  }
 }
