@@ -13,7 +13,7 @@ export default class YnabBudgetsCommand extends CommandBase {
     this.spinner.succeed(`Found ${budgets.length} budgets on YNAB`);
 
     const table = new Table({ head: ['Name', 'Identifier', 'Last modified'] });
-    table.push(...budgets.map((budget) => [budget.name, budget.id, budget.lastModified?.toString()]));
+    table.push(...budgets.map((budget) => [budget.name, budget.id, budget.lastModified?.toISOString()]));
     this.log(table.toString());
   }
 }

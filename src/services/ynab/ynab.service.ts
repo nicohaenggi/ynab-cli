@@ -16,4 +16,14 @@ export class YnabService {
       lastModified: budget.last_modified_on ? new Date(budget.last_modified_on) : undefined,
     }));
   }
+
+  public async listAccounts(budgetId: string) {
+    const accounts = await this.client.getAccounts(budgetId);
+    return accounts.map((account) => ({
+      id: account.id,
+      name: account.name,
+      type: account.type,
+      balance: account.balance,
+    }));
+  }
 }

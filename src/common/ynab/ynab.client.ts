@@ -1,4 +1,4 @@
-import { BudgetSummary, User, API as YnabApi } from 'ynab';
+import { Account, BudgetSummary, User, API as YnabApi } from 'ynab';
 import { YnabApiError } from './ynab.error';
 
 export class YnabApiClient {
@@ -16,6 +16,11 @@ export class YnabApiClient {
   public async getBudgets(): Promise<BudgetSummary[]> {
     const { data } = await this.client.budgets.getBudgets(false);
     return data.budgets;
+  }
+
+  public async getAccounts(budgetId: string): Promise<Account[]> {
+    const { data } = await this.client.accounts.getAccounts(budgetId);
+    return data.accounts;
   }
 
   private handleError(error: unknown): never {
