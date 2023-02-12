@@ -18,6 +18,11 @@ export class AuthService {
     return true;
   }
 
+  public async logout(): Promise<void> {
+    this.config.clearSession();
+    await this.config.save();
+  }
+
   private async _isAuthenticated(token: string | undefined) {
     const api = new YnabApiClient(token);
 

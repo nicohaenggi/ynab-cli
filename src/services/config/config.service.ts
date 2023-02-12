@@ -29,6 +29,10 @@ export class ConfigService {
     };
   }
 
+  public clearSession() {
+    this.config.authentication = undefined;
+  }
+
   public async save(): Promise<void> {
     await mkdir(this.configDirectory, { recursive: true });
     await writeFile(this.configFilePath, JSON.stringify(this.config, null, 2));
