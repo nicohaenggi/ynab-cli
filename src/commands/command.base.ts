@@ -5,7 +5,7 @@ export abstract class CommandBase extends Command {
   private _context: Context | undefined;
 
   get context(): Context {
-    if (!this._context) this._context = new Context();
+    if (!this._context) this._context = new Context(this.config.configDir);
     return this._context;
   }
 }

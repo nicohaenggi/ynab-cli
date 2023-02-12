@@ -13,8 +13,4 @@ export default class YnabBudgetsCommand extends CommandBase {
 
     console.log('budgets', budgets);
   }
-
-  override async catch(error: any) {
-    throw error;
-  }
 }
