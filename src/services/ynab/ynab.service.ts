@@ -1,21 +1,19 @@
-export class YnabService {
-  public async getAuthenticatedUser(options?: { accessToken?: string }): Promise<{ id: string } | undefined> {
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        return resolve(null);
-      }, 2000);
-    });
+import { YnabApiClient } from '../../common/ynab';
+import type { ConfigService } from '../config';
 
-    return { id: 'uuid' };
+export class YnabService {
+  private readonly client: YnabApiClient;
+
+  constructor(private readonly config: ConfigService) {
+    this.client = new YnabApiClient(this.config.accessToken);
   }
 
-  public async retrieveBudgets(): Promise<any[]> {
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        return resolve(null);
-      }, 2000);
-    });
-
-    return [];
+  public async listBudgets() {
+    const budgets = await this.client.getBudgets();
+    return budgets.map((budget) => ({
+      id: budget.id,
+      name: budget.name,
+      lastModified: budget.last_modified_on ? new Date(budget.last_modified_on) : undefined,
+    }));
   }
 }

@@ -1,3 +1,4 @@
+import Table from 'cli-table3';
 import ora from 'ora';
 import { CommandBase } from '../command.base';
 
@@ -8,9 +9,11 @@ export default class YnabBudgetsCommand extends CommandBase {
 
   async run(): Promise<void> {
     this.spinner.start('Retrieving budgets from YNAB');
-    const budgets = await this.context.ynab.retrieveBudgets();
-    this.spinner.stop();
+    const budgets = await this.context.ynab.listBudgets();
+    this.spinner.succeed(`Found ${budgets.length} budgets on YNAB`);
 
-    console.log('budgets', budgets);
+    const table = new Table({ head: ['Name', 'Identifier', 'Last modified'] });
+    table.push(...budgets.map((budget) => [budget.name, budget.id, budget.lastModified?.toString()]));
+    this.log(table.toString());
   }
 }
