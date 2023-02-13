@@ -1,19 +1,23 @@
-import { Args, Flags } from '@oclif/core';
+import Table from 'cli-table3';
 import { CommandBase } from '../command.base';
 
 export default class ConnectionsListCommand extends CommandBase {
-  static override description = 'LIST command';
-
-  static override flags = {
-    flag: Flags.string({ char: 'f', description: 'Required flag', required: true }),
-  };
-
-  static override args = {
-    arg: Args.string({ description: 'Required arg', required: true }),
-  };
+  static override description = 'Lists all connections.';
 
   async run(): Promise<void> {
-    const { args, flags } = await this.parse(ConnectionsListCommand);
-    this.log(`hello from 'CONNECTIONS LIST'`, args, flags);
+    const connections = await this.context.connection.listConnections();
+
+    const table = new Table({ head: ['ID', 'Name', 'Provider', 'Budget', 'Account', 'Last synced'] });
+    table.push(
+      ...connections.map((connection) => [
+        connection.id,
+        connection.name,
+        connection.provider,
+        connection.budget,
+        connection.account,
+        connection.lastSynced?.toISOString() ?? 'never',
+      ]),
+    );
+    this.log(table.toString());
   }
 }

@@ -7,7 +7,8 @@ export class ConfigService {
   private static readonly CONFIG_FILE_NAME = 'config.json';
 
   private static readonly DEFAULT_CONFIG: ConfigSchema = {
-    authentication: undefined,
+    authentication: null,
+    connections: [],
   };
 
   private readonly configFilePath: string;
@@ -23,6 +24,10 @@ export class ConfigService {
     return this.config.authentication?.accessToken;
   }
 
+  public get connections(): ConfigSchema['connections'] {
+    return this.config.connections;
+  }
+
   public setAccessToken(token: string) {
     this.config.authentication = {
       accessToken: token,
@@ -30,7 +35,15 @@ export class ConfigService {
   }
 
   public clearSession() {
-    this.config.authentication = undefined;
+    this.config.authentication = null;
+  }
+
+  public addConnection(connection: ConfigSchema['connections'][number]) {
+    this.config.connections.push(connection);
+  }
+
+  public removeConnectionAtIndex(index: number) {
+    this.config.connections.splice(index, 1);
   }
 
   public async save(): Promise<void> {
